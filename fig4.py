@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-path="/Users/ceri/Documents/Research/OMPTEC/test_code/MRIO-main/Code"
+path="/Users/ceri/Documents/Research/OMPTEC/NHB"
 os.chdir(path)
 ISO_list=pd.read_excel('Metadata.xlsx',sheet_name='Country')
 ISO3=ISO_list['ISO3']
@@ -21,7 +21,7 @@ for s in range(len(index)):
 
 
 
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/MRIO")
+os.chdir(path+"/MRIO")
 #df_trade_flow_data=pd.read_excel('Trade Data EU 2013 ref.xlsx', sheet_name='B-E',index_col=0)
 df_trade_flow_data=pd.read_excel('MRIO_2018 _272regions.xlsx', index_col=0)
 nace=['A', 'B-E', 'F', 'G-I', 'J', 'K', 'L', 'M_N','O-Q', 'R-U']
@@ -125,5 +125,5 @@ for s in range(1,2):
     plt.yscale('log')
     plt.xscale('log')
     plt.ylim([0,1])
-#     os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/cascading")
-    plt.savefig('avalanche_'+nace[s]+'.eps',dpi=300)
+    os.chdir(path+"/cascading")
+    plt.savefig('avalanche_'+nace[s]+'.eps',                                                                                                                                                dpi=300)

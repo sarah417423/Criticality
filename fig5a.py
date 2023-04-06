@@ -1,33 +1,32 @@
 import seaborn as sns
 import matplotlib
-cmap = matplotlib.cm.autumn
-cmap_reversed = matplotlib.cm.get_cmap('YlGnBu_r')
-
-import os
-import pandas as pd
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/Trade matrix within nuts")
-final=pd.read_excel('final_list.xlsx')
-final=list(final.iloc[:,1])
-nace=['A', 'B-E', 'F', 'G-I', 'J', 'K', 'L', 'M_N','O-Q', 'R-U']
-
 import os
 import pandas as pd
 import numpy as np
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Data collection/WIOTS_in_EXCEL")
-ISO_list=pd.read_excel('country.xlsx',sheet_name='Sheet1')
+import matplotlib.pyplot as plt
+cmap_reversed = matplotlib.cm.get_cmap('YlGnBu_r')
+
+path="/Users/ceri/Documents/Research/OMPTEC/NHB"
+os.chdir(path)
+nuts2_272=pd.read_excel('Metadata.xlsx',sheet_name='NUTS2')
+index=pd.read_excel('Metadata.xlsx',sheet_name='index')
+
+ISO_list=pd.read_excel('Metadata.xlsx',sheet_name='Country')
 ISO3=ISO_list['ISO3']
 ISO2=ISO_list['ISO2']
 
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method")
+
+nace=['A', 'B-E', 'F', 'G-I', 'J', 'K', 'L', 'M_N','O-Q', 'R-U']
+
 industry_row=pd.read_excel('industry.xlsx',sheet_name='Sheet3')
 industry_col=pd.read_excel('industry.xlsx',sheet_name='Sheet4')
 
-nace=['A', 'B-E', 'F', 'G-I', 'J', 'K', 'L', 'M_N','O-Q', 'R-U']
+
 index_label=[]
 rgeo_label=[]
 nace_label=[]
 #final=list(freight_sum.index)
-final=list(final)
+final=nuts2_272['NUTS2']
 for i in range(10):
     for j in range(28):
         tmp=ISO3[j]+'-'+nace[i]
@@ -38,15 +37,10 @@ esti_label=pd.DataFrame({'label':index_label,'rgeo':rgeo_label,'nace':nace_label
 esti_loc=esti_label.sort_values('label').index
 esti_label2=esti_label.iloc[esti_loc,:]
 
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Data collection/OECD/ICIO")
+os.chdir(path+"/ICIO")
 icio=pd.read_csv('ICIO2021_2018 .csv')#replace year
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Data collection/WIOTS_in_EXCEL")
-ISO_list=pd.read_excel('country.xlsx',sheet_name='Sheet1')
-ISO3=ISO_list['ISO3']
-ISO2=ISO_list['ISO2']
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/Regional account/NUTS2 transfer")
-nuts2list=pd.read_excel('NUTS2_list.xlsx')
-set0=nuts2list['geo']
+
+set0=nuts2_272['NUTS2']
 row_label=icio.iloc[:,0]
 col_label=pd.Series(icio.columns)
 
@@ -113,7 +107,7 @@ df_trade_flow=df_trade_flow.assign(rgeo=list(esti_label2['rgeo']))
 agg=df_trade_flow.groupby(['rgeo']).sum()
 agg=agg.T
 
-import matplotlib.pyplot as plt
+
 names=locals()
 alpha=0.3
 beta=0.05
@@ -175,12 +169,15 @@ for s in range(10):
         ratio.index=ISO3[0:28]
         ratio.columns=ISO3[0:28]
         agg_to_national[nation,:]=trade_s.mean(axis=0)
-    plt.figure(figsize=(10,7))
+    plt.figure(figsize=(12,10))
     ax = sns.heatmap(ratio, cmap='YlGnBu_r',vmin=0,vmax=1)
-    plt.ylabel(r'Source',fontsize=20)
-    plt.xlabel(r'Neighbor',fontsize=20)
-    sns.set(font_scale = 2)
-    base_path="/Users/ceri/Documents/Research/OMPTEC/Mark's method/cascading/nation v shrink/"
+    
+    # ax.set_xticklabels( fontdict={'fontsize = 16})
+    plt.ylabel(r'Source',fontsize=30)
+    plt.xlabel(r'Neighbor',fontsize=30)
+
+    # sns.set(font_scale = 6)
+    base_path="/Users/ceri/Documents/Research/OMPTEC/NHB/nation v shrink/"
     if not os.path.exists(base_path):#若上述路径不存在则创建
         os.makedirs(base_path)
     os.chdir(base_path)

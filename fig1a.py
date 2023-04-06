@@ -18,15 +18,28 @@ for s in range(len(index)):
     names['t'+str(s)]=tuple(range(index.start[s],index.end[s]))
 
 
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/test_code/MRIO-main-4/Data")
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import itertools
+import random
+import os
+import networkx as nx
+os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/MRIO")
+# #df_trade_flow_data=pd.read_excel('Trade Data EU 2013 ref.xlsx', sheet_name='B-E',index_col=0)
+df_trade_flow_data=pd.read_excel('MRIO_2018 _272regions.xlsx', index_col=0)
+# os.chdir("/Users/ceri/Documents/Research/OMPTEC/test_code/MRIO-main-4/Data")
 #df_trade_flow_data=pd.read_excel('Trade Data EU 2013 ref.xlsx', sheet_name='B-E',index_col=0)
-df_trade_flow_data=pd.read_excel('MRIO_2018_272regions.xlsx', index_col=0)
+# df_trade_flow_data=pd.read_excel('MRIO_2018_272regions.xlsx', index_col=0)
+
 nace=['A', 'B-E', 'F', 'G-I', 'J', 'K', 'L', 'M_N','O-Q', 'R-U']
 index_label=[]
 rgeo_label=[]
 nace_label=[]  
 rows=pd.Series(df_trade_flow_data.index).str.split('-',expand=True)
-final=rows[0].unique()             
+os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/Trade matrix within nuts")
+final=pd.read_excel('final_list.xlsx')
+final=list(final.iloc[:,1])         
 for i in range(10):
     for j in range(len(final)):
         tmp=final[j]+'-'+nace[i]
@@ -44,6 +57,7 @@ df_trade_flow=df_trade_flow.assign(rgeo=list(esti_label2['rgeo']))
 agg=df_trade_flow.groupby(['rgeo']).sum()
 agg=agg.T
 
+
 df_export_total_data=df_trade_flow_data.sum(axis=1)
 df_import_total_data=df_trade_flow_data.sum(axis=0)
 net=df_export_total_data-df_import_total_data
@@ -59,7 +73,6 @@ agg=agg.assign(rgeo=list(esti_label2['rgeo']))
 agg=agg.groupby(['rgeo']).sum()
 total_export=agg.sum(axis=1)
 total_import=agg.sum(axis=0)
-
 
 names=locals()
 export_foreign=np.zeros([272,1])
@@ -100,7 +113,7 @@ df=pd.DataFrame({'xx':list(xxx),'yy':list(yyy),'size':list(np.round(total_export
 
 
 fig = px.scatter(df, x="xx", y="yy", color='ISO',
-                 size='size', hover_data=['rgeo'])
+                 size='size', hover_data=['rgeo'],log_x=True, log_y=True)
 
 fig.update_layout(
     autosize=False,
@@ -124,9 +137,10 @@ fig.update_layout(
         color="Black"
     )
 )
+# fig.update_layout(yaxis_range=[0.01,1])
+# fig.update_layout(xaxis_range=[0.01,1])
 # fig.update_xaxes(showline=True, linewidth=1, linecolor='black', gridcolor='black')
 # fig.update_yaxes(showline=True, linewidth=1, linecolor='black', gridcolor='black')
 
 
 fig.show()
-fig.write_image('EU_agg.pdf')

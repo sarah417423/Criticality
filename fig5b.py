@@ -1,15 +1,17 @@
-import os
 import pandas as pd
 import numpy as np
-path="/Users/ceri/Documents/Research/OMPTEC/test_code/MRIO-main/Code"
+import matplotlib.pyplot as plt
+import itertools
+import random
+import os
+path="/Users/ceri/Documents/Research/OMPTEC/NHB"
 os.chdir(path)
+nuts2_272=pd.read_excel('Metadata.xlsx',sheet_name='NUTS2')
+index=pd.read_excel('Metadata.xlsx',sheet_name='index')
+
 ISO_list=pd.read_excel('Metadata.xlsx',sheet_name='Country')
 ISO3=ISO_list['ISO3']
 ISO2=ISO_list['ISO2']
-
-# os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/Trade matrix within nuts")
-nuts2_272=pd.read_excel('Metadata.xlsx',sheet_name='NUTS2')
-index=pd.read_excel('Metadata.xlsx',sheet_name='index')
 
 names=locals()
 for s in range(len(index)):
@@ -18,14 +20,7 @@ for s in range(len(index)):
     names['t'+str(s)]=tuple(range(index.start[s],index.end[s]))
 
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import itertools
-import random
-import os
-import networkx as nx
-os.chdir("/Users/ceri/Documents/Research/OMPTEC/Mark's method/MRIO")
+os.chdir(path+"/MRIO")
 #df_trade_flow_data=pd.read_excel('Trade Data EU 2013 ref.xlsx', sheet_name='B-E',index_col=0)
 df_trade_flow_data=pd.read_excel('MRIO_2018 _272regions.xlsx', index_col=0)
 nace=['A', 'B-E', 'F', 'G-I', 'J', 'K', 'L', 'M_N','O-Q', 'R-U']
@@ -136,11 +131,11 @@ for s in range(10):
                 agg_to_national[nation,neigh]=ratio.iloc[rgeo_i,rgeo_j]
     agg_to_national=pd.DataFrame(agg_to_national,index=ISO3[0:28],columns=ISO3[0:28])
 #         agg_to_national.to_excel(nace[s]+'_'+final[r]+'.xlsx')
-    plt.figure(figsize=(16,14))
+    plt.figure(figsize=(12,10))
     ax = sns.heatmap(agg_to_national, cmap='YlGnBu_r', vmin=0,vmax=1)
-    plt.ylabel(r'Source',fontsize=26)
-    plt.xlabel(r'Neighbor',fontsize=26)
-    sns.set(font_scale = 2)
+    plt.ylabel(r'Source',fontsize=30)
+    plt.xlabel(r'Neighbor',fontsize=30)
+    # sns.set(font_scale = 2)
 #         plt.title(nace[s]+'_'+final[r],fontsize=20)
     base_path="/Users/ceri/Documents/Research/OMPTEC/NHB/region v shrink/"
     if not os.path.exists(base_path):#若上述路径不存在则创建
